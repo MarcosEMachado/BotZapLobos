@@ -43,17 +43,19 @@ cron.schedule('30 13 * * 1', () => {
     }
 });
 
-cron.schedule('25 23 * * 5', () => {
+cron.schedule('0 21 * * 5', () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY')} Executando a tarefa de enviar mensagem para o grupo ${NOMEGRUPO}`);
     if (idChatGrupo) {
-        const envento = getEvento();
-        if (envento) {
-            const start = envento.start.dateTime || envento.start.date;
-            client.sendMessage(
-                idChatGrupo.id._serialized,
-                `Lembrando que no Domingo ${start} tem ${envento.summary}`
-            );
-        }
+        getEvento((envento) => {
+            if (envento) {
+                const start = envento.start.dateTime || envento.start.date;
+                const data = moment(start).tz('America/Sao_Paulo').format('DD/MM/YYYY');
+                client.sendMessage(
+                    idChatGrupo.id._serialized,
+                    `Lembrando que no Domingo ${data} tem ${envento.summary}`
+                );
+            }
+        });
     }
 });
 
@@ -75,16 +77,16 @@ function getNextMonday() {
     return `${nextMonday.format('YYYY-MM-DD')}T00:00:00.000Z`;
 }
 
-function getEvento() {
+function getEvento(callback) {
     const nextSaturday = getNextSaturday();
     const nextMonday = getNextMonday();
     eventoServer.listEvents(nextSaturday, nextMonday)
         .then(events => {
-            const event = events.find(e => e.summary.includes('Treno'));
-            return event;
+            const event = events.find(e => e.summary.toUpperCase().includes('TREINO'));
+            callback(event);
         })
         .catch(error => {
             console.error('Erro ao obter eventos:', error);
-            return undefined;
+            callback(undefined);
         });
 }
