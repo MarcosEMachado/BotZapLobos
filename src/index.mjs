@@ -36,14 +36,20 @@ client.initialize();
 cron.schedule('30 13 * * 1', () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY')} Executando a tarefa de enviar mensagem para o grupo ${NOMEGRUPO}`);
     if (idChatGrupo) {
-        client.sendMessage(
-            idChatGrupo.id._serialized,
-            'Edu viadooo'
-        )
+        getEvento((envento) => {
+            if (envento) {
+                const start = envento.start.dateTime || envento.start.date;
+                const data = moment(start).tz('America/Sao_Paulo').format('DD/MM/YYYY');
+                client.sendMessage(
+                    idChatGrupo.id._serialized,
+                    `Lembrando que no Domingo ${data} tem ${envento.summary}`
+                );
+            }
+        });
     }
 });
 
-cron.schedule('0 21 * * 5', () => {
+cron.schedule('30 12 * * 5', () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY')} Executando a tarefa de enviar mensagem para o grupo ${NOMEGRUPO}`);
     if (idChatGrupo) {
         getEvento((envento) => {
