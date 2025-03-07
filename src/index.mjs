@@ -19,8 +19,11 @@ const client = new Client({
 client.once('ready', async () => {
     console.log('Client is ready!');
     await client.getChats().then((chats) => {
+        console.log(`uscando pelo nome do grupo ${NOMEGRUPO}`);
         idChatGrupo = chats.find(c => c.name == NOMEGRUPO);
-        console.log(idChatGrupo);
+        if(idChatGrupo) {
+            console.log(`o Id do Grupo ${idChatGrupo.id._serialized}`);
+        }
     });
 });
 
