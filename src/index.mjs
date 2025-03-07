@@ -68,15 +68,9 @@ cron.schedule('30 12 * * 5', () => {
     }
 });
 
-cron.schedule('30 16 * * 5', () => {
+cron.schedule('*/1 * * * *', () => {
 
-    getEvento((envento) => {
-        if (envento) {
-            const start = envento.start.dateTime || envento.start.date;
-            const data = moment(start).tz('America/Sao_Paulo').format('DD/MM/YYYY');
-            console.log(`Lembrando que no Domingo ${data} tem ${envento.summary}`);
-        }
-    });
+    console.log(`Data atual: ${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss')}`);
 
 });
 
