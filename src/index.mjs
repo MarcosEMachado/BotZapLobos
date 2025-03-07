@@ -11,10 +11,6 @@ dotenv.config();
 const { NOMEGRUPO } = process.env;
 var idChatGrupo;
 
-cron.schedule('*/1 * * * *', async () => {
-    console.log(`Data atual: ${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss')}`);
-});
-
 const client = new Client({
     authStrategy: new LocalAuth()
 });
