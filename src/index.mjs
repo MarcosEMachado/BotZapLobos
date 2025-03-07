@@ -20,7 +20,7 @@ client.once('ready', async () => {
     console.log('Client is ready!');
     await client.getChats().then((chats) => {
         idChatGrupo = chats.find(c => c.name == NOMEGRUPO);
-        console.log(`o Id do Grupo ${idChatGrupo.id._serialized}`);
+        console.log(idChatGrupo);
     });
 });
 
