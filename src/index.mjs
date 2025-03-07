@@ -68,6 +68,18 @@ cron.schedule('30 12 * * 5', () => {
     }
 });
 
+cron.schedule('30 16 * * 5', () => {
+
+    getEvento((envento) => {
+        if (envento) {
+            const start = envento.start.dateTime || envento.start.date;
+            const data = moment(start).tz('America/Sao_Paulo').format('DD/MM/YYYY');
+            console.log(`Lembrando que no Domingo ${data} tem ${envento.summary}`);
+        }
+    });
+
+});
+
 function getNextSaturday() {
     const today = moment().tz('America/Sao_Paulo');
     const nextSaturday = today.clone().day(6);
@@ -91,7 +103,10 @@ function getEvento(callback) {
     const nextMonday = getNextMonday();
     eventoServer.listEvents(nextSaturday, nextMonday)
         .then(events => {
-            const event = events.find(e => e.summary.toUpperCase().includes('TREINO'));
+            var event = events.find(e => e.summary.toUpperCase().includes('JOGO'));
+            if (!event){
+                event = events.find(e => e.summary.toUpperCase().includes('TREINO'));
+            }
             callback(event);
         })
         .catch(error => {
