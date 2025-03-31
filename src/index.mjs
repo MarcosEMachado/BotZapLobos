@@ -11,9 +11,7 @@ dotenv.config();
 const { NOMEGRUPO } = process.env;
 var idChatGrupo;
 
-const client = new Client({
-    authStrategy: new LocalAuth()
-});
+var client = getClient();
 
 // Se o cliente logou
 client.once('ready', async () => {
@@ -21,7 +19,7 @@ client.once('ready', async () => {
     await client.getChats().then((chats) => {
         console.log(`uscando pelo nome do grupo ${NOMEGRUPO}`);
         idChatGrupo = chats.find(c => c.name == NOMEGRUPO);
-        if(idChatGrupo) {
+        if (idChatGrupo) {
             console.log(`o Id do Grupo ${idChatGrupo.id._serialized}`);
         }
     });
@@ -92,7 +90,7 @@ function getEvento(callback) {
     eventoServer.listEvents(nextSaturday, nextMonday)
         .then(events => {
             var event = events.find(e => e.summary.toUpperCase().includes('JOGO'));
-            if (!event){
+            if (!event) {
                 event = events.find(e => e.summary.toUpperCase().includes('TREINO'));
             }
             callback(event);
@@ -101,4 +99,18 @@ function getEvento(callback) {
             console.error('Erro ao obter eventos:', error);
             callback(undefined);
         });
+}
+
+cron.schedule('* 0 * * 5', () => {
+    client = getClient();
+});
+
+cron.schedule('* 0 * * 1', () => {
+    client = getClient();
+});
+
+function getClient() {
+    return new Client({
+        authStrategy: new LocalAuth()
+    });
 }
