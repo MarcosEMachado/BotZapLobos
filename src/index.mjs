@@ -37,7 +37,7 @@ client.initialize();
 
 
 cron.schedule('30 13 * * 1', () => {
-    console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY')} Executando a tarefa de enviar mensagem para o grupo ${NOMEGRUPO}`);
+    console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de enviar mensagem para o grupo ${NOMEGRUPO}`);
     if (idChatGrupo) {
         getEvento((envento) => {
             if (envento) {
@@ -53,7 +53,7 @@ cron.schedule('30 13 * * 1', () => {
 });
 
 cron.schedule('30 12 * * 5', () => {
-    console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY')} Executando a tarefa de enviar mensagem para o grupo ${NOMEGRUPO}`);
+    console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de enviar mensagem para o grupo ${NOMEGRUPO}`);
     if (idChatGrupo) {
         getEvento((envento) => {
             if (envento) {
@@ -103,10 +103,7 @@ function getEvento(callback) {
         });
 }
 
-cron.schedule('0 0 * * 5', () => {
-    client.initialize();
-});
-
-cron.schedule('40 19 * * 1', () => {
+cron.schedule('0 10 * * 1,5', () => {
+    console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de atualizar o cliente`);
     client.initialize();
 });
