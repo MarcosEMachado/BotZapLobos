@@ -11,7 +11,9 @@ dotenv.config();
 const { NOMEGRUPO } = process.env;
 var idChatGrupo;
 
-var client = getClient();
+const client = new Client({
+    authStrategy: new LocalAuth()
+});
 
 // Se o cliente logou
 client.once('ready', async () => {
@@ -101,16 +103,10 @@ function getEvento(callback) {
         });
 }
 
-cron.schedule('* 0 * * 5', () => {
-    client = getClient();
+cron.schedule('0 0 * * 5', () => {
+    client.initialize();
 });
 
-cron.schedule('* 0 * * 1', () => {
-    client = getClient();
+cron.schedule('40 19 * * 1', () => {
+    client.initialize();
 });
-
-function getClient() {
-    return new Client({
-        authStrategy: new LocalAuth()
-    });
-}
