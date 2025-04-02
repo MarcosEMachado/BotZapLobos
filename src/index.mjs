@@ -103,7 +103,7 @@ function getEvento(callback) {
         });
 }
 
-cron.schedule('0 10 * * 1,5', () => {
+cron.schedule('30 10,21 * * 1,2,5', () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de atualizar o cliente`);
-    client.initialize();
+    client.resetState();
 });
