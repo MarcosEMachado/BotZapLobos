@@ -16,7 +16,7 @@ const client = new Client({
 });
 
 // Se o cliente logou
-client.once('ready', async () => {
+client.on('ready', async () => {
     console.log('Client is ready!');
     await client.getChats().then((chats) => {
         console.log(`uscando pelo nome do grupo ${NOMEGRUPO}`);
@@ -103,12 +103,19 @@ function getEvento(callback) {
         });
 }
 
-cron.schedule('* 12,20 * * 1,3,5', () => {
+cron.schedule('0 12,20 * * 1,3,5', () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de atualizar o cliente`);
+    client.destroy().finally(
+        () => {
+            console.log('Cliente desconectado!');
+            restartClient();
+        });
+});
+
+function restartClient() {
     client.initialize().then(() => {
-        console.log('Cliente reiniciado!');
+        console.log('Cliente Iniciado!');
     }).catch((error) => {
         console.error('Erro ao reiniciar o cliente:', error);
     });
-
-});
+}
