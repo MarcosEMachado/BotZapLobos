@@ -103,12 +103,12 @@ function getEvento(callback) {
         });
 }
 
-cron.schedule('40 10,21 * * 1,2,5', () => {
+cron.schedule('* 10,20 * * 1,3,5', () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de atualizar o cliente`);
-    try{
-        client.resetState();
-    }catch(e){
-        client.destroy();
-        client.initialize();
-    }
+    client.initialize().then(() => {
+        console.log('Cliente reiniciado!');
+    }).catch((error) => {
+        console.error('Erro ao reiniciar o cliente:', error);
+    });
+
 });
