@@ -105,5 +105,10 @@ function getEvento(callback) {
 
 cron.schedule('30 10,21 * * 1,2,5', () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de atualizar o cliente`);
-    client.resetState();
+    try{
+        client.resetState();
+    }catch(e){
+        client.destroy();
+        client.initialize();
+    }
 });
