@@ -5,10 +5,12 @@ import qrcode from 'qrcode-terminal';
 import cron from 'node-cron';
 import eventoServer from './server/eventoServer.mjs';
 import moment from 'moment-timezone';
+import licitacoesJOB from './jobs/licitacoesJOB.mjs';
 
 
 dotenv.config();
 const { NOMEGRUPO } = process.env;
+const numeros = process.env.NUMEROMENSSAGENS.split(',');
 var idChatGrupo;
 
 const client = new Client({
@@ -43,7 +45,7 @@ cron.schedule('30 13 * * 1', () => {
             if (envento) {
                 const start = envento.start.dateTime || envento.start.date;
                 const data = moment(start).tz('America/Sao_Paulo').format('DD/MM/YYYY');
-                client.sendMessage(
+                sendMessageIfConnected(
                     idChatGrupo.id._serialized,
                     `Lembrando que no Domingo ${data} tem ${envento.summary}`
                 );
@@ -59,7 +61,7 @@ cron.schedule('30 12 * * 5', () => {
             if (envento) {
                 const start = envento.start.dateTime || envento.start.date;
                 const data = moment(start).tz('America/Sao_Paulo').format('DD/MM/YYYY');
-                client.sendMessage(
+                sendMessageIfConnected(
                     idChatGrupo.id._serialized,
                     `Lembrando que no Domingo ${data} tem ${envento.summary}`
                 );
@@ -103,19 +105,30 @@ function getEvento(callback) {
         });
 }
 
-cron.schedule('0 12,20 * * 1,3,5', () => {
-    console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa de atualizar o cliente`);
-    client.destroy().finally(
-        () => {
-            console.log('Cliente desconectado!');
-            restartClient();
-        });
-});
-
-function restartClient() {
-    client.initialize().then(() => {
-        console.log('Cliente Iniciado!');
-    }).catch((error) => {
-        console.error('Erro ao reiniciar o cliente:', error);
-    });
+async function sendMessageIfConnected(chatId, message) {
+        isConnected = await client.getState() === 'CONNECTED';
+        if (isConnected) {
+            await client.sendMessage(chatId, message);
+        } else {
+            client.initialize().then(() => {
+                console.log('Cliente Iniciado!');
+                client.sendMessage(chatId, message);
+            }).catch((error) => {
+                console.error('Erro ao reiniciar o cliente:', error);
+            });
+        }
 }
+
+//JOB DE LICITAÇÕES
+cron.schedule('0 12 * * 1-5', async () => {
+    console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa das licitações`);
+    const mensagem = await licitacoesJOB();
+    if (mensagem) {
+        numeros.forEach(numero => {
+            sendMessageIfConnected(
+                numero,
+                mensagem
+            );
+        });
+    }
+});
