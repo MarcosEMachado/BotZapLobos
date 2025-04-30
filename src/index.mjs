@@ -106,7 +106,7 @@ function getEvento(callback) {
 }
 
 async function sendMessageIfConnected(chatId, message) {
-        isConnected = await client.getState() === 'CONNECTED';
+        const isConnected = await client.getState() === 'CONNECTED';
         if (isConnected) {
             await client.sendMessage(chatId, message);
         } else {
