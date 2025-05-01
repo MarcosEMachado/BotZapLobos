@@ -123,7 +123,7 @@ async function sendMessageIfConnected(chatId, message) {
 cron.schedule('0 12 * * 1-5', async () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa das licitações`);
     const mensagem = await licitacoesJOB();
-    if (mensagem) {
+    if (mensagem && mensagem !== null) {
         numeros.forEach(numero => {
             sendMessageIfConnected(
                 numero,

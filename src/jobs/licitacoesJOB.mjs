@@ -13,6 +13,11 @@ async function licitacoesJOB() {
                 antiga => antiga.codigo === licitacao.codigo
             )
         );
+
+        if (novasLicitacoes.length === 0) {
+            console.log("Nenhuma nova licitação encontrada.");
+            return null; // Retorna null se não houver novas licitações
+        }
         
         let mensagem = `Novas licitações: \n`;
         novasLicitacoes.forEach(licitacao => {
@@ -22,7 +27,8 @@ async function licitacoesJOB() {
             mensagem += `Categoria: ${licitacao.categroria}\n`;
             mensagem += `Situação: ${licitacao.situacao}\n`;
             const tituloSemAcentos = licitacao.tituloLic
-                .replace(/,/g, '')
+                .replace(/[,\-().:;]/g, '')
+                .replace(/  /g, ' ')
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
                 .replace(/[^a-zA-Z0-9]/g, "+");
