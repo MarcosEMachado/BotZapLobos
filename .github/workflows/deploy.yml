@@ -1,0 +1,31 @@
+name: Deploy para VM
+
+on:
+  push:
+    branches:
+      - main  # Substitua pela branch que deseja monitorar
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do Código
+      uses: actions/checkout@v3
+
+    - name: Configurar SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H sua-vm.com >> ~/.ssh/known_hosts
+
+    - name: Deploy na VM
+      run: |
+        ssh ubuntu@144.22.196.120 << 'EOF'
+        cd /caminho/do/projeto
+        git pull origin main
+        npm install
+        pm2 stop all || true  # Para o processo atual, se estiver rodando
+        pm2 start npm --name "BotZap" -- run start  # Inicia o app com PM2
+        EOF
