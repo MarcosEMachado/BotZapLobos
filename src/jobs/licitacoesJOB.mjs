@@ -3,7 +3,7 @@ import licitacaoServer from "../server/licitacaoServer.mjs";
 var listLicitacoes = [];
 var linkBase = "https://www2.sesc.com.br/portal/sesc/departamentonacional/licitacoes/registros/";
 
-async function licitacoesJOB() {
+export async function licitacoesJOB() {
     try {
         const licitacoes = await licitacaoServer.getLicitacoes();
         console.log(`Obtivemos ${licitacoes.length} licitações`);
@@ -46,7 +46,7 @@ async function licitacoesJOB() {
     }
 }
 
-function iniciarListaLicitacoes() {
+export function iniciarListaLicitacoes() {
     licitacaoServer.getLicitacoes()
         .then(licitacoes => {
             listLicitacoes = licitacoes;
@@ -56,5 +56,3 @@ function iniciarListaLicitacoes() {
             console.error("Erro ao inicializar lista de licitações:", error);
         });
 }
-
-export default { licitacoesJOB, iniciarListaLicitacoes };
