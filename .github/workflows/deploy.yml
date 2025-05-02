@@ -18,14 +18,14 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 144.22.196.120 >> ~/.ssh/known_hosts
+        echo "144.22.196.120 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCww25syKA9ADh0oAa9eRYJ163O5aS9iMiwoUECsyg7Xmqpqro2OMb0YYu1fbvnD5YrDTmCc059a3Nz5M/f35hs75UHBmP97dHaUiH25gp6gPkDBZ5g7ApAlaUPpmwQDfhNs2Opojv085sMqYe/DvmuEy84h1HI0Xp7MXGqpyTZqtXVjhkdRh7zZTJlfqEDFYEPWVoNF016CV487rqPyGNzhSZO7n/6OMvZYL7reiFaIDJb3YyTHBzpWJNuUkbChulGS6t4jKet6T4RrTHylqcl5QOrPWjcq1mR/sHNo5vtiFWlgHRgRM+7pLs8Fa/R5iwVsKXSLjjqqEWaw04S0I89u+H69GOTWbslQ3nh5sjEgvb9NfaiDomP+WAmXkYQFXOR26QTE6TA8Uy39bJ5bLdSdEndiTON/OZdGjxisft30Oq/0A2GkDHLVomdmFmE/3WGanj08drQ8v1xEozA9DAVtBj7/XE7zqyzc9zPUlXXntda7abKlaqjdCA+XaIz7ieUKvOhiJT6gZxgGnj70vGQ+NQCSFZDdK6AhlNuXQRvdX1LhyjlUpM+j8EphaFT0zkI5Cb1tUzZXJ/mqITjEID63PUUvWSfgiIeSfXUvN4qxJD+aw+6H+MmZ8sAE4IA2C4gXh+EL/8FEo+mCyynLb0HSLDKXhGYEDQX2VKku8ZaIw== toicmarcos@gmail.com" >> ~/.ssh/known_hosts
 
     - name: Deploy na VM
       run: |
-        ssh -tt ubuntu@144.22.196.120 << 'EOF'
+        ssh -v -tt ubuntu@144.22.196.120 << 'EOF'
         cd fontes/BotZapLobos/
         git pull origin main
         npm install
-        pm2 stop all || true  # Para o processo atual, se estiver rodando
-        pm2 start npm --name "BotZap" -- run start  # Inicia o app com PM2
+        pm2 stop all || true
+        pm2 start npm --name "BotZap" -- run start
         EOF
