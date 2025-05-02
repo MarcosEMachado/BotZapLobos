@@ -5,7 +5,7 @@ import qrcode from 'qrcode-terminal';
 import cron from 'node-cron';
 import eventoServer from './server/eventoServer.mjs';
 import moment from 'moment-timezone';
-import licitacoesJOB from './jobs/licitacoesJOB.mjs';
+import { licitacoesJOB, iniciarListaLicitacoes } from './jobs/licitacoesJOB.mjs';
 
 
 dotenv.config();
@@ -120,6 +120,7 @@ async function sendMessageIfConnected(chatId, message) {
 }
 
 //JOB DE LICITAÇÕES
+iniciarListaLicitacoes(); // Inicializa a lista de licitações ao iniciar o bot
 cron.schedule('0 12 * * 1-5', async () => {
     console.log(`${moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm')} Executando a tarefa das licitações`);
     const mensagem = await licitacoesJOB();

@@ -46,4 +46,15 @@ async function licitacoesJOB() {
     }
 }
 
-export default licitacoesJOB;
+function iniciarListaLicitacoes() {
+    licitacaoServer.getLicitacoes()
+        .then(licitacoes => {
+            listLicitacoes = licitacoes;
+            console.log(`Lista de licitações inicializada com ${listLicitacoes.length} itens.`);
+        })
+        .catch(error => {
+            console.error("Erro ao inicializar lista de licitações:", error);
+        });
+}
+
+export default { licitacoesJOB, iniciarListaLicitacoes };
