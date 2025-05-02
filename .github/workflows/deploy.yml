@@ -18,7 +18,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H sua-vm.com >> ~/.ssh/known_hosts
+        ssh-keyscan -H 144.22.196.120 >> ~/.ssh/known_hosts
 
     - name: Deploy na VM
       run: |
