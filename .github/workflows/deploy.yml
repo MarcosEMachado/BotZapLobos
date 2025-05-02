@@ -23,7 +23,7 @@ jobs:
     - name: Deploy na VM
       run: |
         ssh ubuntu@144.22.196.120 << 'EOF'
-        cd /caminho/do/projeto
+        cd fontes/BotZapLobos/
         git pull origin main
         npm install
         pm2 stop all || true  # Para o processo atual, se estiver rodando
