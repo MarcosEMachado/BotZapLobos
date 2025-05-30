@@ -106,17 +106,20 @@ function getEvento(callback) {
 }
 
 async function sendMessageIfConnected(chatId, message) {
-        const isConnected = await client.getState() === 'CONNECTED';
-        if (isConnected) {
-            await client.sendMessage(chatId, message);
-        } else {
-            client.initialize().then(() => {
-                console.log('Cliente Iniciado!');
-                client.sendMessage(chatId, message);
-            }).catch((error) => {
-                console.error('Erro ao reiniciar o cliente:', error);
-            });
-        }
+    const isConnected = await client.getState() === 'CONNECTED';
+    console.log(`Estado do cliente: ${isConnected ? 'Conectado' : 'Desconectado'}`);
+    if (isConnected) {
+        console.log(`Enviando mensagem para ${chatId}`);
+        await client.sendMessage(chatId, message);
+    } else {
+        client.initialize().then(() => {
+            console.log(`Enviando mensagem para ${chatId}`);
+            console.log('Cliente Iniciado!');
+            client.sendMessage(chatId, message);
+        }).catch((error) => {
+            console.error('Erro ao reiniciar o cliente:', error);
+        });
+    }
 }
 
 //JOB DE LICITAÇÕES
