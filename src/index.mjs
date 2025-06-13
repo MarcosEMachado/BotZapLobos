@@ -105,21 +105,34 @@ function getEvento(callback) {
         });
 }
 
-async function sendMessageIfConnected(chatId, message) {
-    const isConnected = await client.getState() === 'CONNECTED';
-    console.log(`Estado do cliente: ${isConnected ? 'Conectado' : 'Desconectado'}`);
-    if (isConnected) {
-        console.log(`Enviando mensagem para ${chatId}`);
-        await client.sendMessage(chatId, message);
-    } else {
-        client.initialize().then(() => {
+function sendMessageIfConnected(chatId, message) {
+    console.log(`Verificando o estado do cliente antes de enviar a mensagem para ${chatId}`);
+    client.getState().then(state => {
+        const isConnected = state === 'CONNECTED';
+        console.log(`Estado do cliente: ${isConnected ? 'Conectado' : 'Desconectado'}`);
+        if (isConnected) {
             console.log(`Enviando mensagem para ${chatId}`);
-            console.log('Cliente Iniciado!');
-            client.sendMessage(chatId, message);
-        }).catch((error) => {
-            console.error('Erro ao reiniciar o cliente:', error);
-        });
-    }
+            client.sendMessage(chatId, message).then(() => {
+                console.log(`Mensagem enviada para ${chatId}`);
+            }).catch((error) => {
+                console.error(`Erro ao enviar mensagem para ${chatId}:`, error);
+            });
+        } else {
+            client.initialize().then(() => {
+                console.log(`Enviando mensagem para ${chatId}`);
+                console.log('Cliente Iniciado!');
+                client.sendMessage(chatId, message).then(() => {
+                    console.log(`Mensagem enviada para ${chatId}`);
+                }).catch((error) => {
+                    console.error(`Erro ao enviar mensagem para ${chatId}:`, error);
+                });
+            }).catch((error) => {
+                console.error('Erro ao reiniciar o cliente:', error);
+            });
+        }
+    }).catch((error) => {
+        console.error('Erro ao pegar o status do cliente:', error);
+    });
 }
 
 //JOB DE LICITAÇÕES
